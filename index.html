@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=0.5" />
+		<link href="css/app.css" rel="stylesheet" type="text/css" />
+		<script src="js/jquery-1.11.1.min.js"></script>
+	</head>
+	<body>
+
+		<div class="container">
+			
+			<div id="multi" style="margin-left: 30px">
+				<div class="layer tile" data-force="30">
+					<div class="tile__name">答案区</div>
+					<div id="first" class="tile__list">
+
+					</div>
+				</div>
+
+
+				<div class="layer tile" data-force="25">
+					<div class="tile__name">待选区</div>
+					<div id="second" class="tile__list">
+						<img data-answer = "1" src="img/face-01.jpg" />
+						<img data-answer = "2" src="img/face-02.jpg" />
+						<img data-answer = "3" src="img/face-03.jpg" />
+						<img data-answer = "4" src="img/face-04.jpg" />
+						<img data-answer = "5" src="img/face-05.jpg" />
+						<img data-answer = "6" src="img/face-06.jpg" />
+						<img data-answer = "7" src="img/face-07.jpg" />
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<button onclick="get_answer()">获取答案</button>
+
+		<script src="js/cyp.js"></script>
+
+		<script>
+		var size = 0; // 选项的个数
+		var last_answer = ["1","2","3"];
+		function get_answer() {
+			var answer = [];
+			if ($('#first').children().length == size) {
+				$('#first').children().each(function() {
+					answer.push($(this).data("answer"));
+				});
+			} else {
+				alert('请全部排序完成后提交！');
+				return;
+			}
+			console.info(answer);
+		}
+			(function() {
+				
+				var a1 = $("#first").children().length;
+				var a2 = $("#second").children().length;
+				alert(a1 + a2);
+				
+				size = a1 + a2;
+				
+				var last_imgs =[];
+				$('#second').children().each(function() {
+					var aim = $(this).data("answer");
+					var img = $(this)[0];
+					for (var i = 0; i < last_answer.length; i++) {
+						if(last_answer[i] == aim){
+							last_imgs .push(img)
+						}
+					}
+				});
+				// console.info("---"+last_imgs);
+
+				for (var i = 0; i < last_imgs.length; i++) {
+					$('#first').append(last_imgs[i]);
+				}
+				
+				var console = window.console;
+				Sortable.create(multi, {
+					animation: 150,
+					draggable: '.tile',
+					handle: '.tile__name'
+				});
+
+
+				[].forEach.call(multi.getElementsByClassName('tile__list'), function(el) {
+					Sortable.create(el, {
+						group: 'photo',
+						animation: 150
+					});
+				});
+			})();
+			
+			document.addEventListener("DOMContentLoaded", function() {
+				function setNoiseBackground(el, width, height, opacity) {
+					var canvas = document.createElement("canvas");
+					var context = canvas.getContext("2d");
+					canvas.width = width;
+					canvas.height = height;
+					for (var i = 0; i < width; i++) {
+						for (var j = 0; j < height; j++) {
+							var val = Math.floor(Math.random() * 255);
+							context.fillStyle = "rgba(" + val + "," + val + "," + val + "," + opacity + ")";
+							context.fillRect(i, j, 1, 1);
+						}
+					}
+
+					el.style.background = "url(" + canvas.toDataURL("image/png") + ")";
+				}
+				setNoiseBackground(document.getElementsByTagName('body')[0], 50, 50, 0.02);
+			}, false);
+		</script>
+	</body>
+
+</html>
